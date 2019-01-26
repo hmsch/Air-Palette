@@ -3,6 +3,7 @@
 
 import KinectPV2.KJoint;
 import KinectPV2.*;
+import processing.svg.*;
 
 KinectPV2 kinect;
 
@@ -10,7 +11,10 @@ ArrayList<SkeletonData> skeletondata;
 color writeCol;
 
 void setup() {
-  size(1920, 1080, P2D);
+  size(1920, 1080);
+    
+  beginRecord(SVG, "frame-####.svg");
+  
   background(255);
   writeCol = color(255,0,0);
   
@@ -22,11 +26,13 @@ void setup() {
   kinect.enableColorImg(true);
 
   kinect.init();
+
 }
 
 void draw() {
 
-  //image(kinect.getColorImage(), 0, 0, width, height);
+  // tint(255, 127); // doesn't work... :(
+  //`image(kinect.getColorImage(), 0, 0, width, height);
 
   ArrayList<KSkeleton> skeletonArray =  kinect.getSkeletonColorMap();
 
@@ -66,10 +72,10 @@ void draw() {
         
         paletteCheck(left.getX(), left.getY());
         paletteCheck(right.getX(), right.getY());
-
         
       }
     }
+      
   }
   
   noStroke();
@@ -104,9 +110,17 @@ void paletteCheck(float x, float y) {
         //ORANGE
         writeCol = color(255,165,0);
       } else if ((y >= 4*height/5) && (y < height)) {
-        //BLACK
-        writeCol = color(0,0,0);
+        // end record
+        endRecord();
+        println("Finished.");
+        exit();
       }
   }
 
+}
+
+void mouseClicked() {
+  endRecord();
+  println("Finished.");
+  exit();
 }

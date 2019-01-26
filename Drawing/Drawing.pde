@@ -4,15 +4,54 @@
 import KinectPV2.KJoint;
 import KinectPV2.*;
 import processing.svg.*;
+import interfascia.*;
 
 KinectPV2 kinect;
+
+Table table;
+String[] list;
+int rows;
+GUIController c;
+IFButton b1;
 
 ArrayList<SkeletonData> skeletondata;
 color writeCol;
 
-void setup() {
-  size(1920, 1080);
-    
+public void settings() {
+   size(1920, 1080);
+}
+
+
+void setup() {  
+  c = new GUIController (this);
+  PFont font = loadFont("LaoMN-48.vlw");
+  textFont(font, 32);
+  
+  IFLookAndFeel colorScheme = new IFLookAndFeel(this,IFLookAndFeel.DEFAULT);
+  colorScheme.baseColor = color(239, 35, 60);
+  colorScheme.highlightColor = color(217, 4, 41);
+  colorScheme.textColor = color(43,45,66);
+  c.setLookAndFeel(colorScheme);
+  b1 = new IFButton ("Generate Category", 20, 10);
+  b1.setSize(80,40);
+  b1.addActionListener(this);
+  c.add(b1);
+  
+  
+  table = loadTable("categories.csv", "header");
+  rows = table.getRowCount();
+  println(table.getRowCount() + " total rows in table"); 
+  list = new String[table.getRowCount()];
+  int counter = 0;
+  for (TableRow row : table.rows()) {
+
+    String category = row.getString("categories");
+    list[counter] = category;
+
+    counter ++;
+    println(category);
+  }
+  
   beginRecord(SVG, "frame-####.svg");
   
   background(255);
@@ -123,4 +162,12 @@ void mouseClicked() {
   endRecord();
   println("Finished.");
   exit();
+}
+
+void actionPerformed(GUIEvent e) {
+  textSize(22);
+  fill(217, 4, 14, 100);
+  background(43,45,66);
+  int n = (int) random(0, rows);
+  text(list[n], 150, 40);
 }

@@ -7,6 +7,7 @@ import time
 
 # import ML model
 model = load_model('ML/weights.h5')
+buffer = np.array([]);
 
 HOST = ''                 # Symbolic name meaning all available interfaces
 PORT = 5024               # Arbitrary non-privileged port
@@ -19,6 +20,10 @@ while True:
     data = conn.recv(4096)
     if not data: break
     data_array = np.fromstring(data, dtype=int, sep=' ')
+    print("data shape", data_array.shape)
+    buffer = np.append(buffer, data_array)
+    data_array = buffer[:784]
+    buffer = buffer[784:]
     print(data_array)
     img = np.reshape(data_array, (-1, 28)) / 255.0
     x = np.zeros((1,28,28,1))

@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Kinect Pictionary</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="edit_message">Player Name</string>
+    <string name="button_send">Add</string>
+    <string name="button_play">PLAY!</string>
+    <string name="title_activity_add_players">addPlayers</string>
+    <string name="players"></string>
+    <string name="title_activity_play_game">PlayGame</string>
+    <string name="Next">Next to Play:</string>
+    <string name="title_activity_scoreboard">Scoreboard</string>
+</resources>

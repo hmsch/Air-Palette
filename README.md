@@ -1,4 +1,4 @@
-# ichack19-ICH
+# Air Palette
 
 Draw by moving your hands, let AI recognize your drawings. 
 

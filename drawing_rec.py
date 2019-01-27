@@ -36,7 +36,7 @@ while True:
         conn.send(str.encode((str(y_classes[0]))))
     else:
         print('unknown')
-        conn.send(str.encode(str(-1)))
+        conn.send(str.encode('-'))
     time.sleep(10)
     # conn.send(b'Oi you sent something to me')
 conn.close()

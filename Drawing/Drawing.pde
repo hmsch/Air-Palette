@@ -52,7 +52,7 @@ void setup() {
     String category = row.getString("categories");
     list[counter] = category;
 
-    counter ++;
+    counter++;
     //println(category);
   }
   
@@ -71,7 +71,7 @@ void setup() {
   
   myClient = new Client(this, "146.169.204.139", 5024);
 
-  time = 60;
+  time = 30;
 
 }
 
@@ -185,12 +185,16 @@ void draw() {
   textSize(64);
   text("New Word", 10, 60);
   
+  /*strokeWeight(2);
+  stroke(0);
+  fill(220);
+  rect(0, 0, 400, height/5);*/
+  
   fill(0);
   stroke(0);
   strokeWeight(50);
   textSize(64);
   text(wordToDraw, 20, 150);
-      
   if (millis()/1000 >= time) {
     
       PImage pi = get(width/10, 0, 8*width/10, height);
@@ -209,16 +213,21 @@ void draw() {
         // print((pi.pixels[i] & 0xFF) + "  ");
       }
       
+      myClient.clear();
       myClient.write(s);
       // myClient.write(pi.pixels);
     
-      int dataIn = 45;
+      int dataIn = 10;
   
-      //while (myClient.available() == 0);
+      while (myClient.available() == 0);
       if (myClient.available() > 0) {
         dataIn = myClient.read();
-        //println(dataIn);     
+        myClient.clear();
+        //println(dataIn);
       }
+      
+      //pi.save("file-" + dataIn + ".jpg");
+      //println(dataIn);
       
       fill(0);
       stroke(0);
@@ -241,6 +250,21 @@ void draw() {
           case 52:
             text("ladder!", width/3, height/2);
             break;
+          case 58:
+            text("maybe\n apple", width/3, height/2);
+            break;
+          case 59:
+            text("maybe\n banana", width/4, height/2);
+            break;
+          case 60:
+            text("maybe\n candle", width/3, height/2);
+            break;
+          case 61:
+            text("maybe\n fish", width/3, height/2);
+            break;
+          case 62:
+            text("ladder!", width/3, height/2);
+            break;
           case 45:
           default:
             text("unknown...", width/8, height/2);
@@ -257,7 +281,7 @@ color positionCheck(PVector vec, color deflt) {
   float x = vec.x;
   float y = vec.y;
 
-  if (x > 50 && x < 270 && y > 80 && y < 140) {
+  if (x > 0 && x < 400 && y > 0 && y < height/5) {
     int n = (int) random(0, rows);
     wordToDraw = list[n];
   }

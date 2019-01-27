@@ -91,29 +91,31 @@ void draw() {
       } else {
         PairLineList skd = skeletondata.get(i);
         
+        PVector right = new PVector(rightJoint.getX(), rightJoint.getY());
+        skd.rightColNow = positionCheck(right, skd.rightColNow);
+
         if (rightJoint.getState() == KinectPV2.HandState_Open) {
-          PVector vec = new PVector(rightJoint.getX(), rightJoint.getY());
-          skd.rightColNow = positionCheck(vec, skd.rightColNow);
-          Line rightLine = new Line(vec, skd.rightColNow);
+          Line rightLine = new Line(right, skd.rightColNow);
           skd.right.add(rightLine);
         } else if (rightJoint.getState() == KinectPV2.HandState_Lasso) {
           skd.right = new ArrayList<Line>();
           //skd.left = new ArrayList<Line>();
         } else if (rightJoint.getState() == KinectPV2.HandState_Closed) {
-          Line rightLine = new Line(new PVector(rightJoint.getX(), rightJoint.getY()), color(255));
+          Line rightLine = new Line(right, color(255));
           skd.right.add(rightLine);
         }
         
+        PVector left = new PVector(leftJoint.getX(), leftJoint.getY());
+        skd.leftColNow = positionCheck(left, skd.leftColNow);
+        
         if (leftJoint.getState() == KinectPV2.HandState_Open) {
-          PVector vec = new PVector(leftJoint.getX(), leftJoint.getY());
-          skd.leftColNow = positionCheck(vec, skd.leftColNow);
-          Line leftLine = new Line(vec, skd.leftColNow);
+          Line leftLine = new Line(left, skd.leftColNow);
           skd.left.add(leftLine);
         } else if (leftJoint.getState() == KinectPV2.HandState_Lasso) {
           //skd.right = new ArrayList<Line>();
           skd.left = new ArrayList<Line>();
         } else if (leftJoint.getState() == KinectPV2.HandState_Closed) {
-          Line leftLine = new Line(new PVector(leftJoint.getX(), leftJoint.getY()), color(255));
+          Line leftLine = new Line(left, color(255));
           skd.left.add(leftLine);
         }
                                 
@@ -161,16 +163,21 @@ void draw() {
   pi.loadPixels();
 
   for (int i = 0; i < 28*28; i++) {
-    //myClient.write(pi.pixels[i]);
+    //myClient.write(pi.pixels[i] & 0xFF);
     //print((pi.pixels[i] & 0xFF) + "  ");
   }
   //println();
   // myClient.write(pi.pixels);
-
+  
+  /*if (myClient.available() > 0) { 
+    int dataIn;
+    dataIn = myClient.read(); 
+    println(dataIn);
+  }*/
 }
 
 color positionCheck(PVector vec, color deflt) {
-  
+
   float x = vec.x;
   float y = vec.y;
   
@@ -181,7 +188,6 @@ color positionCheck(PVector vec, color deflt) {
         return color(255,0,0);
       } else if ((y >= height/5) && (y < 2*height/5)) {
         //GREEN
-        println("GREEN");
         return color(0,255,0);
       } else if ((y >= 2*height/5) && (y < 3*height/5)) {
         //BLUE

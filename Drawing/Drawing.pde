@@ -22,7 +22,7 @@ ArrayList<PairLineList> skeletondata;
 void setup() {
   size(1920, 1080);
   
-  //myClient = new Client(this, "127.0.0.1", 5204);
+  myClient = new Client(this, "146.169.204.139", 5024);
   
   c = new GUIController (this);
   PFont font = loadFont("LaoMN-48.vlw"); //<>//
@@ -33,7 +33,7 @@ void setup() {
   colorScheme.highlightColor = color(217, 4, 41);
   colorScheme.textColor = color(43,45,66);
   c.setLookAndFeel(colorScheme);
-  b1 = new IFButton ("Generate Category", 20, 10);
+  b1 = new IFButton ("", width/2-450, 25);
   b1.setSize(160,60);
   b1.addActionListener(this);
   c.add(b1);
@@ -69,7 +69,7 @@ void setup() {
 void draw() {
 
   background(255);
-  
+
   //tint(255, 127); // doesn't work... :(
   //image(kinect.getColorImage(), 0, 0, width, height);
  
@@ -140,40 +140,58 @@ void draw() {
   rect(9*width/10, height/5, width/10, 2*height/5);
   fill(0, 0, 255);  // BLUE
   rect(9*width/10, 2*height/5, width/10, 3*height/5);
-  fill(255, 255, 0);  // YELLOW
+  fill(255,105,180);  // PINK
   rect(9*width/10, 3*height/5, width/10, 4*height/5);
-  fill(0, 255, 255);  // CYAN
+  fill(135, 206, 250);  // LIGHT BLUE
   rect(9*width/10, 4*height/5, width/10, height);
   
-  fill(255, 0, 255);  // MAGENTA
-  rect(0, 0, width/10, height/5);
   fill(255, 165, 0);  // ORANGE
+  rect(0, 0, width/10, height/5);
+  fill(255, 255, 0);  // YELLOW
   rect(0, height/5, width/10, 2*height/5);
-  fill(128, 0, 128);  // PURPLE
+  fill(0, 255, 255);  // CYAN
   rect(0, 2*height/5, width/10, 3*height/5);
-  fill(255, 105, 180);  // PINK
+  fill(165,42,42);  // BROWN
   rect(0, 3*height/5, width/10, 4*height/5);
-  fill(165, 42, 42);  // BROWN
+  fill(0);  // BLACK
   rect(0, 4*height/5, width/10, height);
-
-  PImage pi = get(width/10, 0, width/8, height);
-  pi.resize(28, 28);
-  pi.filter(GRAY);
-  pi.filter(INVERT);
-  pi.loadPixels();
-
-  for (int i = 0; i < 28*28; i++) {
-    //myClient.write(pi.pixels[i] & 0xFF);
-    //print((pi.pixels[i] & 0xFF) + "  ");
-  }
-  //println();
-  // myClient.write(pi.pixels);
   
-  /*if (myClient.available() > 0) { 
-    int dataIn;
-    dataIn = myClient.read(); 
-    println(dataIn);
-  }*/
+  fill(0);
+  stroke(0);
+  strokeWeight(50);
+  textSize(128);
+  int time = 75;
+  text(str(time - (millis() / 1000)), width/2-50, 100);
+  
+  textSize(30);
+  text("New Word", width/2-450, 10);
+    
+  if (millis() >= time*1000) {
+    
+      PImage pi = get(width/10, 0, width/8, height);
+      pi.resize(28, 28);
+      pi.filter(GRAY);
+      pi.filter(INVERT);
+      pi.loadPixels();
+
+      String s = "";
+      for (int i = 0; i < 28*28; i++) {
+        s += (pi.pixels[i] & 0xFF) + " ";
+        // print((pi.pixels[i] & 0xFF) + "  ");
+      }
+
+      myClient.write(s);
+      // myClient.write(pi.pixels);
+  
+      if (myClient.available() > 0) { 
+        int dataIn;
+        dataIn = myClient.read();
+        println(dataIn);
+      }
+      
+      noLoop();
+      
+  }
 }
 
 color positionCheck(PVector vec, color deflt) {
@@ -193,29 +211,29 @@ color positionCheck(PVector vec, color deflt) {
         //BLUE
         return color(0,0,255);
       } else if ((y >= 3*height/5) && (y < 4*height/5)) {
-        //YELLOW
-        return color(255,255,0);
+        //PINK
+        return color(255,105,180);
       } else if ((y >= 4*height/5) && (y < height)) {
-        //CYAN
-        return color(0,255,255);
+        //LIGHT BLUE
+        return color(135, 206, 250);
       }
   } else if ( (x >= 0)
     && (x < width / 10)) {
       if ((y >= 0) && (y < height/5)) {
-        //MAGENTA
-        return color(255,0,255);
-      } else if ((y >= height/5) && (y < 2*height/5)) {
         //ORANGE
         return color(255, 165, 0);
+      } else if ((y >= height/5) && (y < 2*height/5)) {
+        //YELLOW
+        return color(255, 255, 0);
       } else if ((y >= 2*height/5) && (y < 3*height/5)) {
-        //PURPLE
-        return color(0,0,255);
+        //CYAN
+        return color(0, 255, 255);
       } else if ((y >= 3*height/5) && (y < 4*height/5)) {
-        //PINK
-        return color(255, 105, 180);
-      } else if ((y >= 4*height/5) && (y < height)) {
         //BROWN
-        return color(165, 42, 42);
+        return color(165,42,42);
+      } else if ((y >= 4*height/5) && (y < height)) {
+        //BLACK
+        return color(0);
       }
   }
   return deflt;

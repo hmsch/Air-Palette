@@ -38,7 +38,7 @@ while True:
         print('sent class !')
         # apple, banana, candle, fish, ladder
         conn.send(str.encode((str(y_classes[0]))))
-    elif prediction[0][y_classes[0]] > 0.30:
+    elif prediction[0][y_classes[0]] > 0.4:
         print('sent class ?')
         # not so sure but maybe
         # apple, banana, candle, fish, ladder

@@ -19,4 +19,6 @@ x[0,:,:,0] = gray
 print(x)
 
 model = load_model('weights.h5')
-print("prediction ", model.predict(x))
+y_prob = model.predict(x)
+y_classes = y_prob.argmax(axis=-1)
+print("prediction ", y_classes)

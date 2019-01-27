@@ -71,7 +71,7 @@ void setup() {
   
   myClient = new Client(this, "146.169.204.139", 5024);
 
-  time = 30;
+  time = 60;
 
 }
 

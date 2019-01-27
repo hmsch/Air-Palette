@@ -37,8 +37,6 @@ while True:
     else:
         print('unknown')
         conn.send(str.encode('-'))
-    time.sleep(10)
-    # conn.send(b'Oi you sent something to me')
 conn.close()
 # optionally put a loop here so that you start
 # listening again after the connection closes

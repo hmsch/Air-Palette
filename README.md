@@ -2,7 +2,12 @@
 
 Draw by moving your hands, let AI recognize your drawings. 
 
-Requires a Kinect, Windows, Python (Keras, ...), Processing.
+Requires a Kinect, Windows, Python 3.6.? (Keras, ...), Processing.
+
+## Run 
+The neural net is already trained and the weights are saved in ```weights.h5```.
+
+Both ``` drawing_rec.py ``` (classifies drawings) and the ```Drawing/drawing.pde``` (handles game logic and user interaction) need to run inorder to play the game. They communicate using sockets. So the Processing program needs the IP address (if not localhost) of the machine running the Python script. 
 
 ## Controls
 - ??

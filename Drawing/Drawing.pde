@@ -8,13 +8,16 @@ import interfascia.*;
 KinectPV2 kinect;
 
 import processing.net.*; 
-Client myClient;
 
 Table table;
 String[] list;
 int rows;
 GUIController c;
 IFButton b1;
+String wordToDraw;
+int time;
+boolean reset;
+Client myClient;
 
 ArrayList<PairLineList> skeletondata;
 
@@ -22,9 +25,9 @@ ArrayList<PairLineList> skeletondata;
 void setup() {
   size(1920, 1080);
   
-  myClient = new Client(this, "146.169.204.139", 5024);
-  
-  c = new GUIController (this);
+  reset = false;
+    
+  /*c = new GUIController (this);
   PFont font = loadFont("LaoMN-48.vlw"); //<>//
   textFont(font, 32);
   
@@ -36,7 +39,7 @@ void setup() {
   b1 = new IFButton ("", width/2-450, 25);
   b1.setSize(160,60);
   b1.addActionListener(this);
-  c.add(b1);
+  c.add(b1);*/
   
   
   table = loadTable("categories.csv", "header");
@@ -52,6 +55,8 @@ void setup() {
     counter ++;
     //println(category);
   }
+  
+  wordToDraw = "";
    
   background(255);
    //<>//
@@ -63,11 +68,22 @@ void setup() {
   kinect.enableColorImg(true);
 
   kinect.init();
+  
+  myClient = new Client(this, "146.169.204.139", 5024);
+
+  time = 60;
 
 }
 
 void draw() {
 
+  if (reset) {
+    int wait = millis()/1000 + 3;
+    while (wait > millis()/1000);
+    time = millis()/1000 + 60;
+    reset = false;
+  }
+  
   background(255);
 
   //tint(255, 127); // doesn't work... :(
@@ -118,6 +134,10 @@ void draw() {
           Line leftLine = new Line(left, color(255));
           skd.left.add(leftLine);
         }
+                     
+        if (right.x < left.x) {
+          time = millis() / 1000;
+        }
                                 
         noStroke();
         fill(0);
@@ -134,44 +154,53 @@ void draw() {
   }
   
   noStroke();
-  fill(255, 0, 0);  // RED
+  fill(#503047);  // BLACK
   rect(9*width/10, 0, width/10, height/5);
-  fill(0, 255, 0);  // GREEN
+  fill(#4D9DE0);  // BLUE
   rect(9*width/10, height/5, width/10, 2*height/5);
-  fill(0, 0, 255);  // BLUE
+  fill(#FC9E4F);  // ORANGE
   rect(9*width/10, 2*height/5, width/10, 3*height/5);
-  fill(255,105,180);  // PINK
+  fill(#E15554);  // RED
   rect(9*width/10, 3*height/5, width/10, 4*height/5);
-  fill(135, 206, 250);  // LIGHT BLUE
+  fill(#E1BC29);  // ORANGE
   rect(9*width/10, 4*height/5, width/10, height);
   
-  fill(255, 165, 0);  // ORANGE
-  rect(0, 0, width/10, height/5);
-  fill(255, 255, 0);  // YELLOW
+  //fill(255, 165, 0);  // ORANGE
+  //rect(0, 0, width/10, height/5);
+  fill(#1D3461);  // DARK BLUE
   rect(0, height/5, width/10, 2*height/5);
-  fill(0, 255, 255);  // CYAN
+  fill(#3BB273);  // GREEN
   rect(0, 2*height/5, width/10, 3*height/5);
-  fill(165,42,42);  // BROWN
+  fill(#7768AE);  // VIOLET
   rect(0, 3*height/5, width/10, 4*height/5);
-  fill(0);  // BLACK
+  fill(#2C3D55);  // BLACK
   rect(0, 4*height/5, width/10, height);
   
   fill(0);
   stroke(0);
   strokeWeight(50);
   textSize(128);
-  int time = 75;
   text(str(time - (millis() / 1000)), width/2-50, 100);
+    
+  textSize(64);
+  text("New Word", 10, 60);
   
-  textSize(30);
-  text("New Word", width/2-450, 10);
+  fill(0);
+  stroke(0);
+  strokeWeight(50);
+  textSize(64);
+  text(wordToDraw, 20, 150);
+      
+  if (millis()/1000 >= time) {
     
-  if (millis() >= time*1000) {
-    
-      PImage pi = get(width/10, 0, width/8, height);
+      PImage pi = get(width/10, 0, 8*width/10, height);
+      //pi.save("uncropped.jpg");
       pi.resize(28, 28);
+      //pi.save("resized.jpg");
       pi.filter(GRAY);
+      //pi.save("gray.jpg");
       pi.filter(INVERT);
+      //pi.save("gray+invert.jpg");
       pi.loadPixels();
 
       String s = "";
@@ -179,17 +208,46 @@ void draw() {
         s += (pi.pixels[i] & 0xFF) + " ";
         // print((pi.pixels[i] & 0xFF) + "  ");
       }
-
+      
       myClient.write(s);
       // myClient.write(pi.pixels);
+    
+      int dataIn = 45;
   
-      if (myClient.available() > 0) { 
-        int dataIn;
+      //while (myClient.available() == 0);
+      if (myClient.available() > 0) {
         dataIn = myClient.read();
-        println(dataIn);
+        //println(dataIn);     
       }
       
-      noLoop();
+      fill(0);
+      stroke(0);
+      strokeWeight(50);
+      textSize(300); 
+      
+      switch (dataIn) {
+          case 48:
+            text("apple!", width/3, height/2);
+            break;
+          case 49:
+            text("banana!", width/4, height/2);
+            break;
+          case 50:
+            text("candle!", width/3, height/2);
+            break;
+          case 51:
+            text("fish!", width/3, height/2);
+            break;
+          case 52:
+            text("ladder!", width/3, height/2);
+            break;
+          case 45:
+          default:
+            text("unknown...", width/8, height/2);
+            break;    
+      }
+      
+      reset = true;
       
   }
 }
@@ -198,54 +256,51 @@ color positionCheck(PVector vec, color deflt) {
 
   float x = vec.x;
   float y = vec.y;
+
+  if (x > 50 && x < 270 && y > 80 && y < 140) {
+    int n = (int) random(0, rows);
+    wordToDraw = list[n];
+  }
   
   if ( (x >= 9*width / 10)
     && (x < width)) {
       if ((y >= 0) && (y < height/5)) {
-        //RED
-        return color(255,0,0);
+        // BLACK
+        return #503047;
       } else if ((y >= height/5) && (y < 2*height/5)) {
-        //GREEN
-        return color(0,255,0);
+        // BLUE
+        return #4D9DE0;
       } else if ((y >= 2*height/5) && (y < 3*height/5)) {
-        //BLUE
-        return color(0,0,255);
+        // ORANGE
+        return #FC9E4F;
       } else if ((y >= 3*height/5) && (y < 4*height/5)) {
-        //PINK
-        return color(255,105,180);
+        // RED
+        return #E15554;
       } else if ((y >= 4*height/5) && (y < height)) {
-        //LIGHT BLUE
-        return color(135, 206, 250);
+        // YELLOW
+        return #E1BC29;
       }
   } else if ( (x >= 0)
     && (x < width / 10)) {
       if ((y >= 0) && (y < height/5)) {
-        //ORANGE
-        return color(255, 165, 0);
+        // ORANGE
+        //return color(255, 165, 0);
       } else if ((y >= height/5) && (y < 2*height/5)) {
-        //YELLOW
-        return color(255, 255, 0);
+        // DARK BLUE
+        return #1D3461;
       } else if ((y >= 2*height/5) && (y < 3*height/5)) {
-        //CYAN
-        return color(0, 255, 255);
+        // GREEN
+        return #3BB273;
       } else if ((y >= 3*height/5) && (y < 4*height/5)) {
-        //BROWN
-        return color(165,42,42);
+        // VIOLET
+        return #7768AE;
       } else if ((y >= 4*height/5) && (y < height)) {
-        //BLACK
-        return color(0);
+        // BLACK
+        return #2C3D55;
       }
   }
   return deflt;
 
-}
-
-void actionPerformed(GUIEvent e) {
-  textSize(22);
-  fill(217, 4, 14, 100);
-  background(255);
-  int n = (int) random(0, rows);
-  text(list[n], 200, 40);
 }
 
 void drawVectors(ArrayList<Line> line_list){

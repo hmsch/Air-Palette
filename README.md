@@ -2,6 +2,10 @@
 
 Draw by moving your hands, let AI recognize your drawings. 
 
+
+Submission for IC Hack 19. Winner in the category 'Best Game'.
+https://devpost.com/software/air-palette
+
 Requires a Kinect, Windows, Python 3.6.? (Keras, ...), Processing, Kinect v2 library for Processing.
 
 ## Run 
